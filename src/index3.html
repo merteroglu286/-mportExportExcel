@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+<script>
+  var ExcelToJSON = function() {
+
+    this.parseExcel = function(file) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var workbook = XLSX.read(data, {
+          type: 'binary'
+        });
+        workbook.SheetNames.forEach(function(sheetName) {
+          // Here is your object
+          var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+          var json_object = JSON.stringify(XL_row_object);
+          console.log(JSON.parse(json_object));
+          var data2 = JSON.parse(json_object)
+          jQuery('#xlx_json').val(json_object);
+          let html = '<table>';
+
+            // Tablo başlıklarını ekleme
+            html += '<tr>';
+            for (const key in data2[0]) {
+            html += '<th>' + key + '</th>';
+            }
+            html += '</tr>';
+
+            // Verileri ekleme
+            for (const data of data2) {
+            html += '<tr>';
+            for (const key in data) {
+                html += '<td>' + data[key] + '</td>';
+            }
+            html += '</tr>';
+            }
+
+            html += '</table>';
+
+            // Oluşturulan HTML'i sayfaya ekleme
+            
+
+            const div = document.getElementById('table-container');
+            div.innerHTML = html;
+        })
+      };
+
+      reader.onerror = function(ex) {
+        console.log(ex);
+      };
+
+      reader.readAsBinaryString(file);
+    };
+  };
+
+  function handleFileSelect(evt) {
+
+    var files = evt.target.files; // FileList object
+    var xl2json = new ExcelToJSON();
+    xl2json.parseExcel(files[0]);
+  }
+
+  let siniflar = [
+  {
+    "sinif": 101,
+    "kapasite": 38
+  },
+  {
+    "sinif": 102,
+    "kapasite": 40
+  },
+  {
+    "sinif": 103,
+    "kapasite": 34
+  },
+  {
+    "sinif": 104,
+    "kapasite": 30
+  },
+  {
+    "sinif": 105,
+    "kapasite": 40
+  },
+  {
+    "sinif": 106,
+    "kapasite": 24
+  },
+  {
+    "sinif": 107,
+    "kapasite": 24
+  },
+  {
+    "sinif": 108,
+    "kapasite": 30
+  },
+  {
+    "sinif": 109,
+    "kapasite": 34
+  },
+  {
+    "sinif": 201,
+    "kapasite": 38
+  },
+  {
+    "sinif": 202,
+    "kapasite": 40
+  },
+  {
+    "sinif": 203,
+    "kapasite": 34
+  },
+  {
+    "sinif": 204,
+    "kapasite": 20
+  },
+  {
+    "sinif": 205,
+    "kapasite": 20
+  },
+  {
+    "sinif": 206,
+    "kapasite": 50
+  },
+  {
+    "sinif": 207,
+    "kapasite": 44
+  },
+  {
+    "sinif": 208,
+    "kapasite": 22
+  },
+  {
+    "sinif": 209,
+    "kapasite": 20
+  }
+]
+  
+</script>
+
+
+
+<form enctype="multipart/form-data">
+  <input id="upload" type=file name="files[]">
+</form>
+
+<textarea class="form-control" rows=35 cols=120 id="xlx_json"></textarea>
+<div id="table-container"></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sinif</th>
+      <th>Kapasite</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{data2[0]}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+</script>
+</body>
+</html>
+
+<!--<template>
+  <div class="container">
+    <input type="file" ref="fileInput" @change="handleFileUpload"/>
+  </div>
+  <table>
+  <thead>
+    <tr>
+      <th>Sinif</th>
+      <th>Kapasite</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div v-for="item in data2">
+    {{ item }}
+  </div>
+</template>
+
+<script>
+  import * as XLSX from "xlsx";
+  var myObjStr=[];
+
+export default {
+  data() {
+    return {
+      data: [],
+      data2: [],
+      classArray: [
+  {
+    "sinif": 101,
+    "kapasite": 38
+  },
+  {
+    "sinif": 102,
+    "kapasite": 40
+  },
+  {
+    "sinif": 103,
+    "kapasite": 34
+  },
+  {
+    "sinif": 104,
+    "kapasite": 30
+  },
+  {
+    "sinif": 105,
+    "kapasite": 40
+  },
+  {
+    "sinif": 106,
+    "kapasite": 24
+  },
+  {
+    "sinif": 107,
+    "kapasite": 24
+  },
+  {
+    "sinif": 108,
+    "kapasite": 30
+  },
+  {
+    "sinif": 109,
+    "kapasite": 34
+  },
+  {
+    "sinif": 201,
+    "kapasite": 38
+  },
+  {
+    "sinif": 202,
+    "kapasite": 40
+  },
+  {
+    "sinif": 203,
+    "kapasite": 34
+  },
+  {
+    "sinif": 204,
+    "kapasite": 20
+  },
+  {
+    "sinif": 205,
+    "kapasite": 20
+  },
+  {
+    "sinif": 206,
+    "kapasite": 50
+  },
+  {
+    "sinif": 207,
+    "kapasite": 44
+  },
+  {
+    "sinif": 208,
+    "kapasite": 22
+  },
+  {
+    "sinif": 209,
+    "kapasite": 20
+  }
+]
+
+    }
+  },
+  methods: {
+    
+    handleFileUpload(sheetName) {
+      let input = this.$refs.fileInput
+      let file = input.files[0]
+
+      let reader = new FileReader()
+      reader.onload = (e) => {
+        var data = new Uint8Array(e.target.result)
+        let workbook = XLSX.read(data, { type: 'array' });
+
+        workbook.SheetNames.forEach(function(sheetName) {
+          // Here is your object
+          var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+          var json_object = JSON.stringify(XL_row_object);
+          myObjStr = JSON.parse(json_object);
+          this.data2 = XL_row_object
+          console.log(myObjStr);
+          
+          
+        })
+      };
+        /* işlemlerinizi burada yapabilirsiniz*/
+
+        reader.readAsArrayBuffer(file)
+      }
+      
+    }
+  }
+</script>
+-->
